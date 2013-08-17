@@ -1,4 +1,5 @@
 Django==1.4
+django-tastypie==0.9.12
 Fabric==1.4.0
 gevent==0.13.6
 greenlet==0.3.4
