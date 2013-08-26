@@ -11,6 +11,9 @@ from apps.map.api import IncidentResource
 v1_api = Api(api_name='v1')
 v1_api.register(IncidentResource())
 
+#v1_api.register(LocationResource())
+ 
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -23,7 +26,8 @@ urlpatterns = patterns('',
 
     # Project URLs go here
     (r'^api/', include(v1_api.urls)),
-    url(r'^map/', 'apps.map.views.map', name = 'map')
+    url(r'^map/', 'apps.map.views.map', name = 'map'),
+    url(r'^map2/', 'apps.map.views.map2', name = 'map2')
 
 )
 

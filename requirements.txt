@@ -12,4 +12,5 @@ django-pylibmc-sasl==0.2.4
 pylibmc==1.2.2
 geopy==0.95.1
 python-omgeo==1.4.4
-
+binify
+pyshp

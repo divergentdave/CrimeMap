@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+{% load staticfiles %}
+{% load map_extras %}
+
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+
+<script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+<script src="http://maps.stamen.com/js/tile.stamen.js?v1.2.2"></script>
+<script src='{% static "js/ext/jquery-1.8.1.min.js" %}'></script>
+<script src="{% static "js/ext/d3.v3.js" %}"></script>
+<script src="{% static "js/ext/nv.d3.js" %}"></script>
+<script src="{% static "js/ext/jquery-ui-1.8.23.custom.min.js" %}"></script>
+<link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}"/>
+<title>The Daily Illini | CrimeMap</title>
+
+</head>
+
+<body>
+
+<div id="map"> </div>
+
+<script>
+
+function setMapHeight(){
+    var windowHeight = window.innerHeight;
+    $( "#map" ).css( "height", (windowHeight-60) + "px" );
+
+}
+setMapHeight();
+window.addEventListener("resize",setMapHeight,false);
+
+</script>
+
+
+
+<script>
+
+var layer = new L.StamenTileLayer("toner");
+var map = new L.Map("map", {
+    center: new L.LatLng(40.10, -88.22),
+    zoom: 14
+});
+map.addLayer(layer);
+
+function getColor(d) {
+	return d > 30 ? '#800026' :
+           d > 25  ? '#BD0026' :
+           d > 15 ? '#E31A1C' :
+           d > 10  ? '#FC4E2A' :
+           d > 5   ? '#FD8D3C' :
+           d > 2   ? '#FEB24C' :
+           d > 1   ? '#FED976' :
+                      '#FFEDA0';
+
+}
+
+function style(feature) {
+    return {
+        fillColor: getColor(feature.properties.COUNT),
+        weight: 2,
+        opacity: 1,
+        color: 'white',
+        dashArray: '3',
+        fillOpacity: 0.7
+    };
+}
+
+
+
+var incidentjson = '{% static "json/aug25binned.json" %}';
+
+var incidents;
+
+var allson = $.getJSON(incidentjson, function(data) {
+	incidents = L.geoJson(data, {style: style}).addTo(map);
+}); 
+
+var points = '{% api_list "incident" %}&limit=10000';
+
+var pointSON;
+
+var pointsonpoints = $.getJSON(points, function(data) {
+	pointSON = L.geoJson(data.objects, {onEachFeature: onEachFeature}).addTo(map);
+}); 
+
+		function onEachFeature(feature, layer) {
+			var popupContent = String("<p>" + feature.code + "</p> <p><strong>" + feature.properties.crime + "</strong></p>");
+
+			if (feature.properties && feature.properties.popupContent) {
+				popupContent += feature.properties.popupContent;
+			}
+
+			layer.bindPopup(popupContent);
+		}
+
+
+
+
+
+</script>

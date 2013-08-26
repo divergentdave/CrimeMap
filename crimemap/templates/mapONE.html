@@ -37,14 +37,14 @@ window.addEventListener("resize",setMapHeight,false);
 
 <script>
 
-var layer = new L.StamenTileLayer("watercolor");
+var layer = new L.StamenTileLayer("terrain");
 var map = new L.Map("map", {
     center: new L.LatLng(40.10, -88.22),
     zoom: 14
 });
 map.addLayer(layer);
 
-var incidentjson = '{% api_list "incident" %}&limit=200 ';
+var incidentjson = '{% api_list "incident" %}&limit=10000 ';
 
 var incidents;
 

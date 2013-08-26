@@ -8,3 +8,5 @@ from django.shortcuts import render_to_response, get_object_or_404
 
 def map(request):
 	return render_to_response('mapONE.html')
+def map2(request):
+	return render_to_response('mapTWO.html')
