@@ -130,7 +130,8 @@ INSTALLED_APPS = (
     
     # Project apps
     'apps.core',
-    'apps.map'
+    'apps.map',
+    'south'
 )
 
 # Caching

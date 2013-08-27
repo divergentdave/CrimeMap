@@ -13,7 +13,10 @@ class IncidentAdmin(admin.ModelAdmin):
 	list_display = ['code', 'date_reported', 'crime', 'location']
 	pass
 
+class HexAdmin(admin.OSMGeoAdmin):
+	pass
 admin.site.register(Incident, IncidentAdmin)
+admin.site.register(Hexbin, HexAdmin)
 #admin.site.register(Location, admin.OSMGeoAdmin)
 admin.site.register(LocationType, LocationTypeAdmin)
 admin.site.register(Location, LocationAdmin)

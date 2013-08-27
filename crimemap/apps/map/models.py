@@ -9,17 +9,43 @@ class LocationType(models.Model):
 	def __unicode__(self):
 		return self.name
 
+#class Hexmap(models.Model):
+#	geom = models.MultiPolygonField(srid=4326)
+#	objects = models.GeoManager()
+
+class Hexbin(models.Model):
+	poly = models.MultiPolygonField('IT IS A FUCKING HEXAGON', null=True, geography=True)
+	objects = models.GeoManager()
+
+	#def build_stats(self):
+
 class Location(models.Model):
 	name = models.CharField(max_length=255)
 	address = models.CharField(max_length=255, blank=True)
 	location_type = models.ForeignKey(LocationType, blank = True, null = True)
 	point_location = models.PointField('GeoDjango point field of this location', null=True, geography=True, blank = True)
 	verified = models.BooleanField(blank = True)
+	hexbin = models.ForeignKey(Hexbin, blank = True, null = True)
+
 	class Meta:
 		ordering = ['name']
   	objects = models.GeoManager()
+	
 	def __unicode__(self):
 		return self.name
+
+	def save(self, *args, **kwargs):
+		self.hexbin = self.get_bin()
+		super(Location, self).save(*args, **kwargs)
+
+	def get_bin(self):
+		hexerbin = None
+		if self.point_location:
+			# find the hexbin to which this fucker belongs.
+			hexes = Hexbin.objects.filter(poly__covers=self.point_location)
+			if hexes.count() > 0:
+				hexerbin = hexes[0]
+			return hexerbin
 
 class Crime(models.Model):
 	name = models.CharField(max_length=50)
