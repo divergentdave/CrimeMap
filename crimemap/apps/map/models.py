@@ -16,6 +16,17 @@ class LocationType(models.Model):
 class Hexbin(models.Model):
 	poly = models.MultiPolygonField('IT IS A FUCKING HEXAGON', null=True, geography=True)
 	objects = models.GeoManager()
+	total_count = models.IntegerField(default = 0, null = True)
+
+	def save_stats(self):
+		self.total_count = Incident.objects.filter(location__hexbin = self).count()
+
+	def save(self, **kwargs):
+		self.save_stats()
+		super(self.__class__, self).save(**kwargs)
+
+	class Meta:
+		ordering = ['-total_count']
 
 	#def build_stats(self):
 
@@ -26,6 +37,14 @@ class Location(models.Model):
 	point_location = models.PointField('GeoDjango point field of this location', null=True, geography=True, blank = True)
 	verified = models.BooleanField(blank = True)
 	hexbin = models.ForeignKey(Hexbin, blank = True, null = True)
+	total_count = models.IntegerField(default = 0, null = True)
+
+	def save_stats(self):
+		print self.name
+		count = Incident.objects.filter(location = self).count()
+		print count
+		if count > 0:
+			self.total_count = count
 
 	class Meta:
 		ordering = ['name']
@@ -36,6 +55,7 @@ class Location(models.Model):
 
 	def save(self, *args, **kwargs):
 		self.hexbin = self.get_bin()
+		self.save_stats()
 		super(Location, self).save(*args, **kwargs)
 
 	def get_bin(self):
@@ -49,11 +69,37 @@ class Location(models.Model):
 
 class Crime(models.Model):
 	name = models.CharField(max_length=50)
+	total_count = models.IntegerField(default = 0, null = True)
+
+	def save_stats(self):
+		print self.name
+		self.total_count = Incident.objects.filter(crime = self).count()
+		return 
+
+	def save(self, **kwargs):
+		self.save_stats()
+		super(self.__class__, self).save(**kwargs)
+
+	class Meta:
+		ordering = ['-total_count']
 	def __unicode__(self):
 		return self.name
 
 class Disposition(models.Model):
 	name = models.CharField(max_length=50)
+	total_count = models.IntegerField(default = 0, null = True)
+
+	def save_stats(self):
+		print self.name
+		self.total_count = Incident.objects.filter(disposition = self).count()
+
+	def save(self, **kwargs):
+		self.save_stats()
+		super(self.__class__, self).save(**kwargs)
+
+	class Meta:
+		ordering = ['-total_count']
+
 	def __unicode__(self):
 		return self.name
 
