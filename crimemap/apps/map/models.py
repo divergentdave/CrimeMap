@@ -17,7 +17,6 @@ class Hexbin(models.Model):
 	poly = models.MultiPolygonField('IT IS A FUCKING HEXAGON', null=True, geography=True)
 	objects = models.GeoManager()
 	total_count = models.IntegerField(default = 0, null = True)
-
 	def save_stats(self):
 		self.total_count = Incident.objects.filter(location__hexbin = self).count()
 
@@ -28,7 +27,43 @@ class Hexbin(models.Model):
 	class Meta:
 		ordering = ['-total_count']
 
-	#def build_stats(self):
+	def get_incidents(self, month=None, crime= None, violent = None):
+		kwargs = {'location__hexbin': self}
+		if month: 
+			kwargs['date_occurred__month'] = month
+		if crime:
+			kwargs['crime'] = crime
+		if violent:
+			kwargs['crime__violent'] = True
+		incidents = Incident.objects.filter(**kwargs)
+		return incidents
+
+	def build_violent_stats(self):
+		incidents = {}
+
+		incident_list = self.get_incidents()
+
+		for incident in incident_list:
+			
+			code = incident.code
+			
+			incidents[code] = []
+
+			location = incident.location.name
+			crime = incident.crime.name
+			disposition = incident.disposition.name
+			date = incident.date_occurred
+			time = incident.time_occurred
+
+			incidents[code].append({
+				'code': code,
+				'location': location,
+				'crime': crime,
+				'date': date,
+				'time': time
+				})
+
+		return incidents
 
 class Location(models.Model):
 	name = models.CharField(max_length=255)
@@ -70,7 +105,8 @@ class Location(models.Model):
 class Crime(models.Model):
 	name = models.CharField(max_length=50)
 	total_count = models.IntegerField(default = 0, null = True)
-
+	violent = models.NullBooleanField()
+	alcohol = models.NullBooleanField()
 	def save_stats(self):
 		print self.name
 		self.total_count = Incident.objects.filter(crime = self).count()

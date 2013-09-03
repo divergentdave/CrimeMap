@@ -8,6 +8,8 @@ class LocationAdmin(admin.OSMGeoAdmin):
 	default_lon = -9821718.67269053
 	default_zoom = 12
 
+class CrimeAdmin(admin.ModelAdmin):
+	list_display = ['name', 'violent']
 
 class LocationTypeAdmin(admin.ModelAdmin):
 	pass
@@ -22,6 +24,7 @@ class HexAdmin(admin.OSMGeoAdmin):
 	pass
 admin.site.register(Incident, IncidentAdmin)
 admin.site.register(Hexbin, HexAdmin)
+admin.site.register(Crime, CrimeAdmin)
 #admin.site.register(Location, admin.OSMGeoAdmin)
 admin.site.register(LocationType, LocationTypeAdmin)
 admin.site.register(Location, LocationAdmin)

@@ -6,12 +6,11 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from apps.map.models import *
 
 from tastypie.api import Api
-from apps.map.api import IncidentResource
+from apps.map.api import IncidentResource, HexResource
 
 v1_api = Api(api_name='v1')
 v1_api.register(IncidentResource())
-
-#v1_api.register(LocationResource())
+v1_api.register(HexResource())
  
 
 admin.autodiscover()

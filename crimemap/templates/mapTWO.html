@@ -39,16 +39,13 @@
 <div class='row-fluid'>
 	<div class='span8'>
 		<div id="map"> </div>
+
+	</div>
+
+	<div class='span4'>
 	</div>
 
 	<div class='row-fluid'>
-
-		{% for incident in incidents %}
-			
-			<h3>{{ incident.code }} </h3>
-			<h5> {{ incident.crime }} </h5>
-
-		{% endfor %}
 
 	</div>
 
@@ -57,7 +54,7 @@
 
 function setMapHeight(){
     var windowHeight = window.innerHeight;
-    $( "#map" ).css( "height", (windowHeight-60) + "px" );
+    $( "#map" ).css( "height", (windowHeight-300) + "px" );
 
 }
 setMapHeight();
@@ -72,20 +69,23 @@ window.addEventListener("resize",setMapHeight,false);
 var layer = new L.StamenTileLayer("toner");
 var map = new L.Map("map", {
     center: new L.LatLng(40.110, -88.233),
-    zoom: 15
+    zoom: 15,
+    minZoom: 14
 });
 map.addLayer(layer);
 
 function getColor(d) {
-	return d > 16  ? '#B10026' :
-           d > 8 ? '#E31A1C' :
-           d > 6  ? '#FC4E2A' :
-           d > 4   ? '#FD8D3C' :
-           d > 2   ? '#FEB24C' :
-           d > 1   ? '#FED976' :
-                      '#FFF';
+	return d > 16  ? '#A50F15' :
+           d > 8 ? '#DE2D26' :
+           d > 6  ? '#FB6A4A' :
+           d > 4   ? '#FC9272' :
+           d > 2   ? '#FCBBA1' :
+           d > 1   ? '#FEE5D9' :
+                      '';
 
 }
+//0xFEE5D9; 0xFCBBA1; 0xFC9272; 0xFB6A4A; 0xDE2D26; 0xA50F15; 
+
 /*
 F1EEF6; D0D1E6; A6BDDB; 74A9CF; 3690C0; 0570B0; 034E7B; 
 
@@ -96,23 +96,23 @@ D73027; FC8D59; FEE090; FFFFBF; E0F3F8; 91BFDB; 4575B4;
 */
 function style(feature) {
     return {
-        fillColor: getColor(feature.properties.COUNT),
-        weight: 2,
-        opacity: 8,
-        color: 'white',
-        dashArray: '3',
-        fillOpacity: 0.7
+        fillColor: getColor(feature.properties.count),
+        weight: .5,
+        opacity: 2,
+        color: 'black',
+        //dashArray: '3',
+        fillOpacity: 0.8
     };
 }
 
 
 
-var incidentjson = '{% static "json/aug25binned.json" %}';
+var hexsource = '{% static "json/cached_hexbins.json" %}';
 
-var incidents;
+var hexbins;
 
-var allson = $.getJSON(incidentjson, function(data) {
-	incidents = L.geoJson(data, {style: style, onEachFeature: onEachHex}).addTo(map);
+var hexbinjson = $.getJSON(hexsource, function(data) {
+	hexbins = L.geoJson(data.objects, {style: style}).addTo(map);
 }); 
 
 var hex;
@@ -127,7 +127,7 @@ function changehex(e) {
 	var layer = e.target;
 	hex = layer.feature.name
 }
-
+/*
 var points = '{% api_list "incident" %}&limit=10000';
 
 var pointSON;
@@ -146,7 +146,7 @@ var pointsonpoints = $.getJSON(points, function(data) {
 			layer.bindPopup(popupContent);
 		}
 
-
+*/
 
 /*
 we want onclock to get a location -- do it like sector
@@ -155,5 +155,7 @@ have a model method to identify your hexbin!
 
 
 */
+
+
 
 </script>
