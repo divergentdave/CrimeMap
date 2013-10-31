@@ -1,4 +1,7 @@
+
+
 DAILY ILLINI CRIME MAP
+![alt tag](http://i.imgur.com/BsbcrNW.png)
 
 Django app for tracking Clery-reported crime around the UIUC campus
 
@@ -15,3 +18,4 @@ cd into crimemap/
 
 run 'python manage.py syncdb'
 run 'python manage.py import1'
+
