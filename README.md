@@ -1,5 +1,4 @@
 
-
 DAILY ILLINI CRIME MAP
 ![alt tag](http://i.imgur.com/BsbcrNW.png)
 
