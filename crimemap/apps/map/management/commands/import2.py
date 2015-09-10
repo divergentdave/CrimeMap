@@ -29,10 +29,10 @@ class Command(BaseCommand):
 				)
 
 			date_reported_object = strptime(h[1].strip(), '%m/%d/%Y')
-			time_reported_object = strptime(h[2].strip(), '%H:%M:00 %p')
+			time_reported_object = strptime(h[2].strip(), '%I:%M:00 %p')
 			date_occurred_object = strptime(h[3].strip(), '%m/%d/%Y')
 			if len(h[4].strip()) > 0:
-				time_occurred_object = strptime(h[4].strip(), '%H:%M:00 %p')
+				time_occurred_object = strptime(h[4].strip(), '%I:%M:00 %p')
 			else:
 				time_occurred = strptime('', '')
 
